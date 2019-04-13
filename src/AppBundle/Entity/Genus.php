@@ -25,14 +25,14 @@ class Genus
     private $notes;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
      */
-    private $name;
+    private $subFamily;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $subFamily;
+    private $name;
 
     /**
      * @ORM\Column(type="integer")
