@@ -46,6 +46,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "reset-db": [
+            "php bin/console doctrine:schema:drop --force; php bin/console doctrine:schema:create; php bin/console doctrine:fixtures:load;"
         ]
     },
     "config": {

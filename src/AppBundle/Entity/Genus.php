@@ -71,12 +71,12 @@ class Genus
         return $this;
     }
 
-    public function getSubFamily(): ?string
+    public function getSubFamily(): ?SubFamily
     {
         return $this->subFamily;
     }
 
-    public function setSubFamily(string $subFamily): self
+    public function setSubFamily(SubFamily $subFamily): self
     {
         $this->subFamily = $subFamily;
 

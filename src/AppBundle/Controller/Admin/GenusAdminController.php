@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Admin;
 
+use AppBundle\Entity\Genus;
 use AppBundle\Form\GenusFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,9 +17,7 @@ class GenusAdminController extends Controller
      */
     public function indexAction()
     {
-        $genuses = $this->getDoctrine()
-            ->getRepository('AppBundle:Genus')
-            ->findAll();
+        $genuses = $this->getDoctrine()->getRepository(Genus::class)->findAll();
 
         return $this->render('admin/genus/list.html.twig', array(
             'genuses' => $genuses
@@ -30,7 +29,7 @@ class GenusAdminController extends Controller
      */
     public function newAction()
     {
-        //$form = $this->createForm(GenusFormType::class);
+        $form = $this->createForm(GenusFormType::class);
 
         return $this->render('admin/genus/new.html.twig', [
             'genusForm' => $form->createView()
