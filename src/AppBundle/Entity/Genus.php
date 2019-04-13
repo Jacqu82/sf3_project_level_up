@@ -97,7 +97,7 @@ class Genus
 
     public function getFunFact(): ?string
     {
-        return $this->funFact;
+        return '**TEST** ' . $this->funFact;
     }
 
     public function setFunFact(?string $funFact): self
@@ -109,7 +109,7 @@ class Genus
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return new \DateTime('-'.rand(0, 100).' days');
+        return new \DateTime('-' . rand(0, 100) . ' days');
     }
 
     public function setIsPublished(?bool $isPublished): self
