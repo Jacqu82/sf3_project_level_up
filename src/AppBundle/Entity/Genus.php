@@ -108,7 +108,7 @@ class Genus
 
     public function getFunFact(): ?string
     {
-        return '**TEST** ' . $this->funFact;
+        return $this->funFact;
     }
 
     public function setFunFact(?string $funFact): self
