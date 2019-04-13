@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,6 +65,9 @@ class GenusController extends Controller
             throw $this->createNotFoundException('genus not found');
         }
 
+        $transformer = $this->get('app.markdown_transformer');
+        $funFact = $transformer->parse($genus->getFunFact());
+
         /*
         $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
         $funFact = $genus->getFunFact();
@@ -78,7 +82,7 @@ class GenusController extends Controller
         */
 
         $this->get('logger')
-            ->info('Showing genus: '.$genusName);
+            ->info('Showing genus: ' . $genusName);
 
 //        $recentNotes = $genus->getNotes()
 //            ->filter(function(GenusNote $note) {
@@ -89,6 +93,7 @@ class GenusController extends Controller
 
         return $this->render('genus/show.html.twig', [
             'genus' => $genus,
+            'funFact' => $funFact,
             'recentNotesCount' => count($recentNotes)
         ]);
     }
@@ -106,7 +111,7 @@ class GenusController extends Controller
             $notes[] = [
                 'id' => $note->getId(),
                 'username' => $note->getUsername(),
-                'avatarUri' => '/images/'. $note->getUserAvatarFilename(),
+                'avatarUri' => '/images/' . $note->getUserAvatarFilename(),
                 'note' => $note->getNote(),
                 'date' => $note->getCreatedAt()->format('M d, Y')
             ];
