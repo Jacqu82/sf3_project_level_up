@@ -26,4 +26,11 @@ class SecurityController extends Controller
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/logout", name="security_logout")
+     */
+    public function logoutAction()
+    {
+    }
 }
