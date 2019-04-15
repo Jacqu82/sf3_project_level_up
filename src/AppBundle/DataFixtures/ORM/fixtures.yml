@@ -25,3 +25,4 @@ AppBundle\Entity\User:
         # use some fake data for this
         email: jacqu<current()>@wp.pl
         plainPassword: qwerty
+        roles: ['ROLE_ADMIN']

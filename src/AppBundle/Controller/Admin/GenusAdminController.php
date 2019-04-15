@@ -18,6 +18,11 @@ class GenusAdminController extends Controller
      */
     public function indexAction()
     {
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
+//        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+//            throw $this->createAccessDeniedException('GET OUT!');
+//        }
+
         $genuses = $this->getDoctrine()->getRepository(Genus::class)->findAll();
 
         return $this->render('admin/genus/list.html.twig', array(
@@ -40,7 +45,10 @@ class GenusAdminController extends Controller
             $em->persist($genus);
             $em->flush();
 
-            $this->addFlash('success', 'Genus created - you are amazing!');
+            $this->addFlash(
+                'success',
+                sprintf('Genus created by you: %s!', $this->getUser()->getEmail())
+            );
 
             return $this->redirectToRoute('admin_genus_list');
         }

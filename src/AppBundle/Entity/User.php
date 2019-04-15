@@ -30,6 +30,11 @@ class User implements UserInterface
 
     private $plainPassword;
 
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    private $roles = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -42,7 +47,12 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return $roles;
     }
 
     public function getPassword(): ?string
@@ -64,6 +74,11 @@ class User implements UserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
     }
 
     public function setPassword(?string $password): self
@@ -91,6 +106,13 @@ class User implements UserInterface
         // forces the object to look "dirty" to Doctrine. Avoids
         // Doctrine *not* saving this entity, if only plainPassword changes
         $this->password = null;
+
+        return $this;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
