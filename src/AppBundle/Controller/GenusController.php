@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +35,9 @@ class GenusController extends Controller
         $note->setNote('I counted 8 legs... as they wrapped around me');
         $note->setCreatedAt(new \DateTime('-1 month'));
         $note->setGenus($genus);
+
+        $user = $em->getRepository(User::class)->findOneBy(['email' => 'aquanaut1@example.org']);
+        $genus->addGenusScientist($user);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($genus);

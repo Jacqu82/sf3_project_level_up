@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,6 +20,12 @@ class Genus
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinTable(name="genus_scientist")
+     */
+    private $genusScientists;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\GenusNote", mappedBy="genus")
@@ -70,6 +77,7 @@ class Genus
     public function __construct()
     {
         $this->notes = new ArrayCollection();
+        $this->genusScientists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,8 +178,27 @@ class Genus
     {
         return $this->slug;
     }
+
     public function setSlug($slug)
     {
         $this->slug = $slug;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getGenusScientists(): Collection
+    {
+        return $this->genusScientists;
+    }
+
+    public function addGenusScientist(User $user)
+    {
+        if (!$this->genusScientists->contains($user)) {
+//            $this->genusScientist[] = $user;
+            $this->genusScientists->add($user);
+        }
+
+        return $this;
     }
 }
