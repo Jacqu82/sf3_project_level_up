@@ -1,12 +1,11 @@
 AppBundle\Entity\Genus:
     genus_{1..10}:
         name: <genus()>
+        subFamily: '@subfamily_*'
         speciesCount: <numberBetween(100, 100000)>
         funFact: <sentence()>
         isPublished: <boolean(75)>
-        subFamily: '@subfamily_*'
         firstDiscoveredAt: <dateTimeBetween('-200 years', 'now')>
-
 AppBundle\Entity\GenusNote:
     genus.note_{1..100}:
         username: <userName()>
@@ -14,15 +13,21 @@ AppBundle\Entity\GenusNote:
         note: <paragraph()>
         createdAt: <dateTimeBetween('-6 months', 'now')>
         genus: '@genus_*'
-
 AppBundle\Entity\SubFamily:
     subfamily_{1..10}:
         # use some fake data for this
         name: <lastName()>
-
 AppBundle\Entity\User:
     user_{1..10}:
-        # use some fake data for this
-        email: jacqu<current()>@wp.pl
+        email: jacqu<current()>@gmail.com
         plainPassword: qwerty
         roles: ['ROLE_ADMIN']
+        avatarUri: <imageUrl(100, 100, 'abstract')>
+    user.aquanaut_{1..10}:
+        email: aquanaut<current()>@example.org
+        plainPassword: qwerty
+        isScientist: true
+        firstName: <firstName()>
+        lastName: <lastName()>
+        universityName: <company()> University
+        avatarUri: <imageUrl(100, 100, 'abstract')>

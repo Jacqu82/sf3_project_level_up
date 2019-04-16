@@ -8,9 +8,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
- * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
+ * @UniqueEntity(fields={"email"}, message="It looks like you already have an account!")
  */
 class User implements UserInterface
 {
@@ -21,20 +21,30 @@ class User implements UserInterface
      */
     private $id;
 
+//    /**
+//     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
+//     */
+//    private $studiedGenuses;
+
     /**
-     * @ORM\Column(type="string", unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
+     * @ORM\Column(type="string", unique=true)
      */
     private $email;
 
     /**
+     * The encoded password
+     *
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
+     * A non-persisted field that's used to create the encoded password.
      * @Assert\NotBlank(groups={"Registration"})
+     *
+     * @var string
      */
     private $plainPassword;
 
@@ -43,19 +53,53 @@ class User implements UserInterface
      */
     private $roles = [];
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isScientist = false;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $lastName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $avatarUri;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $universityName;
+
+
+//    public function __construct()
+//    {
+//        $this->studiedGenuses = new ArrayCollection();
+//    }
+
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    // needed by the security system
+    public function getUsername()
     {
         return $this->email;
     }
 
-    public function getRoles(): array
+    public function getRoles()
     {
         $roles = $this->roles;
+
+        // give everyone ROLE_USER!
         if (!in_array('ROLE_USER', $roles)) {
             $roles[] = 'ROLE_USER';
         }
@@ -63,13 +107,19 @@ class User implements UserInterface
         return $roles;
     }
 
-    public function getPassword(): ?string
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    public function getPassword()
     {
         return $this->password;
     }
 
     public function getSalt()
     {
+        // leaving blank - I don't need/have a password!
     }
 
     public function eraseCredentials()
@@ -77,51 +127,112 @@ class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setPassword(?string $password): self
+    public function setEmail($email)
     {
-        $this->password = $password;
-
-        return $this;
+        $this->email = $email;
     }
 
-    /**
-     * @return mixed
-     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
     public function getPlainPassword()
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @param mixed $plainPassword
-     * @return User
-     */
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
         // forces the object to look "dirty" to Doctrine. Avoids
         // Doctrine *not* saving this entity, if only plainPassword changes
         $this->password = null;
-
-        return $this;
     }
 
-    public function setRoles(array $roles): self
+    public function isScientist()
     {
-        $this->roles = $roles;
-
-        return $this;
+        return $this->isScientist;
     }
+
+    public function setIsScientist($isScientist)
+    {
+        $this->isScientist = $isScientist;
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getAvatarUri()
+    {
+        return $this->avatarUri;
+    }
+
+    public function setAvatarUri($avatarUri)
+    {
+        $this->avatarUri = $avatarUri;
+    }
+
+    public function getUniversityName()
+    {
+        return $this->universityName;
+    }
+
+    public function setUniversityName($universityName)
+    {
+        $this->universityName = $universityName;
+    }
+
+    public function getFullName()
+    {
+        return trim($this->getFirstName().' '.$this->getLastName());
+    }
+
+//    /**
+//     * @return ArrayCollection|GenusScientist[]
+//     */
+//    public function getStudiedGenuses()
+//    {
+//        return $this->studiedGenuses;
+//    }
+
+//    public function addStudiedGenus(Genus $genus)
+//    {
+//        if ($this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses[] = $genus;
+//        $genus->addGenusScientist($this);
+//    }
+//
+//    public function removeStudiedGenus(Genus $genus)
+//    {
+//        if (!$this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses->removeElement($genus);
+//        $genus->removeGenusScientist($this);
+//    }
 }
