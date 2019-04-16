@@ -23,11 +23,12 @@ class GenusFormType extends AbstractType
                 'placeholder' => 'Choose a Sub Family',
                 'query_builder' => function (SubFamilyRepository $repo) {
                     return $repo->findAllAlphabetical();
-                },
-//                'help' => 'Help'
+                }
             ])
             ->add('speciesCount')
-            ->add('funFact')
+            ->add('funFact', null, [
+                'help' => 'For example, Leatherback sea turtles can travel more than 10,000 miles every year!'
+            ])
             ->add('isPublished', ChoiceType::class, [
                 'choices' => [
                     'Yes' => true,
@@ -41,6 +42,11 @@ class GenusFormType extends AbstractType
                 'html5' => false
             ]);
     }
+
+//    public function finishView(FormView $view, FormInterface $form, array $options)
+//    {
+//        $view['funFact']->vars['help'] = 'For example, Leatherback sea turtles can travel more than 10,000 miles every year!';
+//    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
