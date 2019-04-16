@@ -75,7 +75,7 @@ class Genus
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -87,7 +87,7 @@ class Genus
         return $this->subFamily;
     }
 
-    public function setSubFamily(SubFamily $subFamily): self
+    public function setSubFamily(?SubFamily $subFamily): self
     {
         $this->subFamily = $subFamily;
 
@@ -99,7 +99,7 @@ class Genus
         return $this->speciesCount;
     }
 
-    public function setSpeciesCount(int $speciesCount): self
+    public function setSpeciesCount(?int $speciesCount): self
     {
         $this->speciesCount = $speciesCount;
 
