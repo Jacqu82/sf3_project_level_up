@@ -38,11 +38,11 @@
             <div class="col-xs-4">
                 <h3>Studied Genuses</h3>
                 <ul class="list-group">
-{#                    {% for genusScientist in user.studiedGenuses %}#}
-{#                        <li class="list-group-item">#}
-{#                            <a href="{{ path('genus_show', {slug: genusScientist.genus.slug }) }}">{{ genusScientist.genus.name }}</a>#}
-{#                        </li>#}
-{#                    {% endfor %}#}
+                    {% for genusStudied in user.studiedGenuses %}
+                        <li class="list-group-item">
+                            <a href="{{ path('genus_show', {slug: genusStudied.slug }) }}">{{ genusStudied.name }}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

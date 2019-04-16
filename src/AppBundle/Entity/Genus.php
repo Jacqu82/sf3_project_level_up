@@ -22,7 +22,7 @@ class Genus
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses")
      * @ORM\JoinTable(name="genus_scientist")
      */
     private $genusScientists;
@@ -192,11 +192,20 @@ class Genus
         return $this->genusScientists;
     }
 
-    public function addGenusScientist(User $user)
+    public function addGenusScientist(User $user): self
     {
         if (!$this->genusScientists->contains($user)) {
 //            $this->genusScientist[] = $user;
             $this->genusScientists->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeGenusScientist(User $user): self
+    {
+        if ($this->genusScientists->contains($user)) {
+            $this->genusScientists->removeElement($user);
         }
 
         return $this;

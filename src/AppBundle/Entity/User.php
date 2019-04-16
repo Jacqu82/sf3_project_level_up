@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,10 +23,11 @@ class User implements UserInterface
      */
     private $id;
 
-//    /**
-//     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
-//     */
-//    private $studiedGenuses;
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
+     * @ORM\OrderBy({"name"="ASC"})
+     */
+    private $studiedGenuses;
 
     /**
      * @Assert\NotBlank()
@@ -79,10 +82,10 @@ class User implements UserInterface
     private $universityName;
 
 
-//    public function __construct()
-//    {
-//        $this->studiedGenuses = new ArrayCollection();
-//    }
+    public function __construct()
+    {
+        $this->studiedGenuses = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -210,13 +213,13 @@ class User implements UserInterface
         return trim($this->getFirstName().' '.$this->getLastName());
     }
 
-//    /**
-//     * @return ArrayCollection|GenusScientist[]
-//     */
-//    public function getStudiedGenuses()
-//    {
-//        return $this->studiedGenuses;
-//    }
+    /**
+     * @return Collection|Genus[]
+     */
+    public function getStudiedGenuses(): Collection
+    {
+        return $this->studiedGenuses;
+    }
 
 //    public function addStudiedGenus(Genus $genus)
 //    {
