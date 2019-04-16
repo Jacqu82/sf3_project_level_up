@@ -23,7 +23,8 @@ class GenusFormType extends AbstractType
                 'placeholder' => 'Choose a Sub Family',
                 'query_builder' => function (SubFamilyRepository $repo) {
                     return $repo->findAllAlphabetical();
-                }
+                },
+//                'help' => 'Help'
             ])
             ->add('speciesCount')
             ->add('funFact')

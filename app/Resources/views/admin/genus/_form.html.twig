@@ -9,7 +9,9 @@
         'label': 'Number of species'
     }) }}
     {{ form_row(genusForm.funFact) }}
-    {{ form_row(genusForm.isPublished) }}
+    {{ form_row(genusForm.isPublished, {
+        help: 'Should this genus be shown on the site?'
+    }) }}
     {{ form_row(genusForm.firstDiscoveredAt) }}
 
     <button type="submit" class="btn btn-{{ class }}" formnovalidate>{{ button }}</button>
