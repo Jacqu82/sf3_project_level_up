@@ -197,6 +197,9 @@ class Genus
         if (!$this->genusScientists->contains($user)) {
 //            $this->genusScientist[] = $user;
             $this->genusScientists->add($user);
+
+            // not needed for persistence, just keeping both sides in sync
+            $user->addStudiedGenus($this);
         }
 
         return $this;
@@ -206,6 +209,9 @@ class Genus
     {
         if ($this->genusScientists->contains($user)) {
             $this->genusScientists->removeElement($user);
+
+            // not needed for persistence, just keeping both sides in sync
+            $user->removeStudiedGenus($this);
         }
 
         return $this;
