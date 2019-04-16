@@ -11,4 +11,12 @@ class SubFamilyRepository extends EntityRepository
         return $this->createQueryBuilder('s')
             ->orderBy('s.name', 'ASC');
     }
+
+    public function findAny()
+    {
+        return $this->createQueryBuilder('s')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

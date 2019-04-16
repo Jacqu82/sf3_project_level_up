@@ -17,10 +17,16 @@ class GenusController extends Controller
      */
     public function newAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        $subFamily = $em->getRepository('AppBundle:SubFamily')
+            ->findAny();
+
         $genus = new Genus();
         $genus->setName('Octopus' . rand(1, 100));
-        $genus->setSubFamily('Octopodinae');
+        $genus->setSubFamily($subFamily);
+        $genus->setFunFact('Corporis impedit porro ab.');
         $genus->setSpeciesCount(rand(100, 99999));
+        $genus->setFirstDiscoveredAt(new \DateTime('50 years'));
 
         $note = new GenusNote();
         $note->setUsername('AquaWeaver');
@@ -34,7 +40,11 @@ class GenusController extends Controller
         $em->persist($note);
         $em->flush();
 
-        return new Response('Genus created!');
+        return new Response(sprintf(
+            '<html><body>Genus created! <a href="%s">%s</a></body></html>',
+            $this->generateUrl('genus_show', ['slug' => $genus->getSlug()]),
+            $genus->getName()
+        ));
     }
 
     /**
@@ -52,23 +62,15 @@ class GenusController extends Controller
 
 
     /**
-     * @Route("/genus/{genusName}", name="genus_show")
+     * @Route("/genus/{slug}", name="genus_show")
      */
-    public function showAction($genusName)
+    public function showAction(Genus $genus)
     {
-        $em = $this->getDoctrine()->getManager();
-        /** @var Genus $genus */
-        $genus = $em->getRepository(Genus::class)->findOneBy(['name' => $genusName]);
-
-        if (!$genus) {
-            throw $this->createNotFoundException('genus not found');
-        }
-
         $transformer = $this->get('app.markdown_transformer');
         $funFact = $transformer->parse($genus->getFunFact());
 
         $this->get('logger')
-            ->info('Showing genus: ' . $genusName);
+            ->info('Showing genus: ' . $genus->getName());
 
 //        $recentNotes = $genus->getNotes()
 //            ->filter(function(GenusNote $note) {
@@ -85,7 +87,7 @@ class GenusController extends Controller
     }
 
     /**
-     * @Route("/genus/{name}/notes", name="genus_show_notes")
+     * @Route("/genus/{slug}/notes", name="genus_show_notes")
      * @Method("GET")
      */
     public function getNotesAction(Genus $genus)

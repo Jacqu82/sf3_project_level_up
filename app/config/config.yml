@@ -70,3 +70,9 @@ doctrine_cache:
             type: file_system
             file_system:
                 directory: '%kernel.cache_dir%/markdown_cache'
+
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            sluggable: true

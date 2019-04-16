@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,6 +37,12 @@ class Genus
      * @Assert\NotBlank()
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", unique=true)
+     * @Gedmo\Slug(fields={"name"})
+     */
+    private $slug;
 
     /**
      * @ORM\Column(type="integer")
@@ -157,5 +164,14 @@ class Genus
     public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null)
     {
         $this->firstDiscoveredAt = $firstDiscoveredAt;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
     }
 }

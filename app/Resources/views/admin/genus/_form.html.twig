@@ -14,5 +14,24 @@
     }) }}
     {{ form_row(genusForm.firstDiscoveredAt) }}
 
+        {# render fields manually #}
+{#        {{ form_label(genusForm.firstDiscoveredAt.year) }}#}
+
+{#        #}{# set field rendered #}
+{#        {% do genusForm.firstDiscoveredAt.year.setRendered() %}#}
+
+{#        <select id="{{ genusForm.firstDiscoveredAt.year.vars.id }}"#}
+{#                name="{{ genusForm.firstDiscoveredAt.year.vars.full_name }}">#}
+{#            {% for choice in genusForm.firstDiscoveredAt.year.vars.choices %}#}
+{#                <option value="{{ choice.value }}" {{ choice.value == genusForm.firstDiscoveredAt.year.vars.data ? 'selected' : '' }}>#}
+{#                    {{ choice.label }}#}
+{#                </option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+{#        {{ form_errors(genusForm.firstDiscoveredAt.year) }}#}
+
+{#        {{ form_row(genusForm.firstDiscoveredAt.month) }}#}
+{#        {{ form_row(genusForm.firstDiscoveredAt.day) }}#}
+
     <button type="submit" class="btn btn-{{ class }}" formnovalidate>{{ button }}</button>
 {{ form_end(genusForm) }}

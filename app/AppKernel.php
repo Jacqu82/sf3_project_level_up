@@ -1,7 +1,7 @@
 <?php
 
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
@@ -17,6 +17,8 @@ class AppKernel extends Kernel
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+
             new AppBundle\AppBundle(),
         ];
 
