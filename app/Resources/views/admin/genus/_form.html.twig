@@ -13,7 +13,17 @@
         help: 'Should this genus be shown on the site?'
     }) }}
     {{ form_row(genusForm.firstDiscoveredAt) }}
-    {{ form_row(genusForm.genusScientists) }}
+
+    <h3>Scientists</h3>
+    <div class="row">
+        {% for genusScientistForm in genusForm.genusScientists %}
+            <div class="col-xs-4">
+                {{ form_errors(genusScientistForm) }}
+                {{ form_row(genusScientistForm.user) }}
+                {{ form_row(genusScientistForm.yearsStudied) }}
+            </div>
+        {% endfor %}
+    </div>
 
         {# render fields manually #}
 {#        {{ form_label(genusForm.firstDiscoveredAt.year) }}#}

@@ -4,12 +4,11 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\SubFamily;
-use AppBundle\Entity\User;
 use AppBundle\Repository\SubFamilyRepository;
-use AppBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -43,16 +42,9 @@ class GenusFormType extends AbstractType
                 'attr' => ['class' => 'js-datepicker'],
                 'html5' => false
             ])
-            ->add('genusScientists', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-                'multiple' => true,
-                'expanded' => true,
-                'query_builder' => function (UserRepository $repo) {
-                    return $repo->findAllScientists();
-                }
-            ])
-        ;
+            ->add('genusScientists', CollectionType::class, [
+                'entry_type' => GenusScientistEmbeddedForm::class
+            ]);
     }
 
 //    public function finishView(FormView $view, FormInterface $form, array $options)

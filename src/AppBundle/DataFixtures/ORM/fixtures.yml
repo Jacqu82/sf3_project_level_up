@@ -35,3 +35,9 @@ AppBundle\Entity\User:
         lastName: <lastName()>
         universityName: <company()> University
         avatarUri: <imageUrl(100, 100, 'abstract')>
+
+AppBundle\Entity\GenusScientist:
+    genus.scientist_{1..50}:
+        user: '@user.aquanaut_*'
+        genus: '@genus_*'
+        yearsStudied: <numberBetween(1, 30)>

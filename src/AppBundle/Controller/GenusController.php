@@ -133,20 +133,14 @@ class GenusController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Genus $genus */
-        $genus = $em->getRepository(Genus::class)->find($genusId);
-        if (!$genus) {
-            throw $this->createNotFoundException('genus not found');
-        }
-
-        /** @var User $genusScientist */
-        $genusScientist = $em->getRepository(User::class)->find($userId);
+        /** @var GenusScientist $genusScientist */
+        $genusScientist = $em->getRepository(GenusScientist::class)
+            ->findOneBy(['user' => $userId, 'genus' => $genusId]);
         if (!$genusScientist) {
             throw $this->createNotFoundException('scientist not found');
         }
 
-        $genus->removeGenusScientist($genusScientist);
-        $em->persist($genus);
+        $em->remove($genusScientist);
         $em->flush();
 
         return new Response(null, 204);

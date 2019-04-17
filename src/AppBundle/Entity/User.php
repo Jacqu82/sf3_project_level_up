@@ -220,7 +220,7 @@ class User implements UserInterface
         return $this->studiedGenuses;
     }
 
-    public function addStudiedGenus(Genus $genus)
+    public function addStudiedGenus(GenusScientist $genus)
     {
         if ($this->studiedGenuses->contains($genus)) {
             return;
@@ -229,7 +229,7 @@ class User implements UserInterface
         //$genus->addGenusScientist($this);
     }
 
-    public function removeStudiedGenus(Genus $genus)
+    public function removeStudiedGenus(GenusScientist $genus)
     {
         if (!$this->studiedGenuses->contains($genus)) {
             return;
