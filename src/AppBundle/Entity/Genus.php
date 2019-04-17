@@ -22,8 +22,7 @@ class Genus
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(name="genus_scientist")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GenusScientist", mappedBy="genus", fetch="EXTRA_LAZY")
      */
     private $genusScientists;
 
@@ -90,7 +89,7 @@ class Genus
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName($name): self
     {
         $this->name = $name;
 
@@ -102,7 +101,7 @@ class Genus
         return $this->subFamily;
     }
 
-    public function setSubFamily(?SubFamily $subFamily): self
+    public function setSubFamily($subFamily): self
     {
         $this->subFamily = $subFamily;
 
@@ -114,7 +113,7 @@ class Genus
         return $this->speciesCount;
     }
 
-    public function setSpeciesCount(?int $speciesCount): self
+    public function setSpeciesCount($speciesCount): self
     {
         $this->speciesCount = $speciesCount;
 
@@ -126,7 +125,7 @@ class Genus
         return $this->funFact;
     }
 
-    public function setFunFact(?string $funFact): self
+    public function setFunFact($funFact): self
     {
         $this->funFact = $funFact;
 
@@ -138,7 +137,7 @@ class Genus
         return new \DateTime('-' . rand(0, 100) . ' days');
     }
 
-    public function setIsPublished(?bool $isPublished): self
+    public function setIsPublished($isPublished): self
     {
         $this->isPublished = $isPublished;
 
@@ -185,7 +184,7 @@ class Genus
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|GenusScientist[]
      */
     public function getGenusScientists(): Collection
     {
@@ -199,7 +198,7 @@ class Genus
             $this->genusScientists->add($user);
 
             // not needed for persistence, just keeping both sides in sync
-            $user->addStudiedGenus($this);
+            //$user->addStudiedGenus($this);
         }
 
         return $this;
@@ -211,7 +210,7 @@ class Genus
             $this->genusScientists->removeElement($user);
 
             // not needed for persistence, just keeping both sides in sync
-            $user->removeStudiedGenus($this);
+            //$user->removeStudiedGenus($this);
         }
 
         return $this;

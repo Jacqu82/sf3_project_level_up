@@ -38,9 +38,9 @@
             <div class="col-xs-4">
                 <h3>Studied Genuses</h3>
                 <ul class="list-group">
-                    {% for genusStudied in user.studiedGenuses %}
+                    {% for genusScientist in user.studiedGenuses %}
                         <li class="list-group-item">
-                            <a href="{{ path('genus_show', {slug: genusStudied.slug }) }}">{{ genusStudied.name }}</a>
+                            <a href="{{ path('genus_show', {slug: genusScientist.genus.slug }) }}">{{ genusScientist.genus.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>

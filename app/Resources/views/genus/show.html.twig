@@ -22,14 +22,15 @@
                         {% for genusScientist in genus.genusScientists %}
                             <li class="list-group-item js-scientist-item">
                                 <a href="{{ path('user_show', {
-                                    'id': genusScientist.id
+                                    'id': genusScientist.user.id
                                 }) }}">
-                                    {{ genusScientist.fullName }}
+                                    {{ genusScientist.user.fullName }}
+                                    ({{ genusScientist.yearsStudied }} years)
                                 </a>
                                 <a href="#"
                                    class="btn btn-link btn-xs pull-right js-remove-scientist-user"
                                    data-url="{{ path('genus_scientists_remove', {
-                                       genusId: genus.id, userId: genusScientist.id
+                                       genusId: genus.id, userId: genusScientist.user.id
                                    }) }}">
                                     <span class="fa fa-close"></span>
                                 </a>

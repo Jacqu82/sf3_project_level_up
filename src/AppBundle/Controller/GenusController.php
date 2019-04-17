@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Entity\GenusScientist;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -37,10 +38,14 @@ class GenusController extends Controller
         $note->setGenus($genus);
 
         $user = $em->getRepository(User::class)->findOneBy(['email' => 'aquanaut1@example.org']);
-        $genus->addGenusScientist($user);
 
-        $em = $this->getDoctrine()->getManager();
+        $genusScientist = new GenusScientist();
+        $genusScientist->setGenus($genus);
+        $genusScientist->setUser($user);
+        $genusScientist->setYearsStudied(10);
+
         $em->persist($genus);
+        $em->persist($genusScientist);
         $em->persist($note);
         $em->flush();
 
@@ -143,7 +148,7 @@ class GenusController extends Controller
         $genus->removeGenusScientist($genusScientist);
         $em->persist($genus);
         $em->flush();
-        
+
         return new Response(null, 204);
     }
 }

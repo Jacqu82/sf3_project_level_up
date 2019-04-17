@@ -24,8 +24,7 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genus", mappedBy="genusScientists")
-     * @ORM\OrderBy({"name"="ASC"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GenusScientist", mappedBy="user")
      */
     private $studiedGenuses;
 
@@ -214,7 +213,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Genus[]
+     * @return Collection|GenusScientist[]
      */
     public function getStudiedGenuses(): Collection
     {
@@ -227,7 +226,7 @@ class User implements UserInterface
             return;
         }
         $this->studiedGenuses[] = $genus;
-        $genus->addGenusScientist($this);
+        //$genus->addGenusScientist($this);
     }
 
     public function removeStudiedGenus(Genus $genus)
@@ -236,6 +235,6 @@ class User implements UserInterface
             return;
         }
         $this->studiedGenuses->removeElement($genus);
-        $genus->removeGenusScientist($this);
+        //$genus->removeGenusScientist($this);
     }
 }
