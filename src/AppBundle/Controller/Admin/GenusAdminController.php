@@ -73,7 +73,7 @@ class GenusAdminController extends Controller
 
             $this->addFlash('success', 'Genus updated - you are amazing!');
 
-            return $this->redirectToRoute('admin_genus_list');
+            //return $this->redirectToRoute('admin_genus_list');
         }
 
         return $this->render('admin/genus/edit.html.twig', [

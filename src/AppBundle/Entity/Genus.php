@@ -22,7 +22,12 @@ class Genus
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GenusScientist", mappedBy="genus", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\GenusScientist",
+     *      mappedBy="genus",
+     *      fetch="EXTRA_LAZY",
+     *     orphanRemoval=true
+     * )
      */
     private $genusScientists;
 
@@ -168,6 +173,7 @@ class Genus
     {
         return $this->firstDiscoveredAt;
     }
+
     public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null)
     {
         $this->firstDiscoveredAt = $firstDiscoveredAt;
@@ -183,8 +189,6 @@ class Genus
         $this->slug = $slug;
     }
 
-
-
     /**
      * @return Collection|GenusScientist[]
      */
@@ -193,28 +197,31 @@ class Genus
         return $this->genusScientists;
     }
 
-//    public function addGenusScientist(GenusScientist $user): self
-//    {
-//        if (!$this->genusScientists->contains($user)) {
-////            $this->genusScientist[] = $user;
-//            $this->genusScientists->add($user);
-//
-//            // not needed for persistence, just keeping both sides in sync
-//            //$user->addStudiedGenus($this);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeGenusScientist(GenusScientist $user): self
-//    {
-//        if ($this->genusScientists->contains($user)) {
-//            $this->genusScientists->removeElement($user);
-//
-//            // not needed for persistence, just keeping both sides in sync
-//            //$user->removeStudiedGenus($this);
-//        }
-//
-//        return $this;
-//    }
+    public function addGenusScientist(GenusScientist $genusScientist): self
+    {
+        if (!$this->genusScientists->contains($genusScientist)) {
+//            $this->genusScientist[] = $user;
+            $this->genusScientists->add($genusScientist);
+
+            // not needed for persistence, just keeping both sides in sync
+            //$user->addStudiedGenus($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGenusScientist(GenusScientist $genusScientist): self
+    {
+        if ($this->genusScientists->contains($genusScientist)) {
+            $this->genusScientists->removeElement($genusScientist);
+
+            // not needed for persistence, just keeping both sides in sync
+            //$user->removeStudiedGenus($this); //ManyToMany
+
+            // needed to update the owning side of the relationship!
+            $genusScientist->setGenus(null); //OneToMany
+        }
+
+        return $this;
+    }
 }

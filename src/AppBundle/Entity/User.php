@@ -220,21 +220,21 @@ class User implements UserInterface
         return $this->studiedGenuses;
     }
 
-    public function addStudiedGenus(GenusScientist $genus)
-    {
-        if ($this->studiedGenuses->contains($genus)) {
-            return;
-        }
-        $this->studiedGenuses[] = $genus;
-        //$genus->addGenusScientist($this);
-    }
-
-    public function removeStudiedGenus(GenusScientist $genus)
-    {
-        if (!$this->studiedGenuses->contains($genus)) {
-            return;
-        }
-        $this->studiedGenuses->removeElement($genus);
-        //$genus->removeGenusScientist($this);
-    }
+//    public function addStudiedGenus(GenusScientist $genus)
+//    {
+//        if ($this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses[] = $genus;
+//        //$genus->addGenusScientist($this);
+//    }
+//
+//    public function removeStudiedGenus(GenusScientist $genus)
+//    {
+//        if (!$this->studiedGenuses->contains($genus)) {
+//            return;
+//        }
+//        $this->studiedGenuses->removeElement($genus);
+//        //$genus->removeGenusScientist($this);
+//    }
 }
