@@ -26,7 +26,8 @@ class Genus
      *     targetEntity="AppBundle\Entity\GenusScientist",
      *      mappedBy="genus",
      *      fetch="EXTRA_LAZY",
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     cascade={"persist"}
      * )
      */
     private $genusScientists;
@@ -204,7 +205,10 @@ class Genus
             $this->genusScientists->add($genusScientist);
 
             // not needed for persistence, just keeping both sides in sync
-            //$user->addStudiedGenus($this);
+            //$user->addStudiedGenus($this); //ManyToMany
+
+            // needed to update the owning side of the relationship!
+            $genusScientist->setGenus($this); //OneToMany
         }
 
         return $this;
