@@ -59,7 +59,7 @@ class UserController extends Controller
         $form = $this->createForm(UserEditForm::class, $user);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
