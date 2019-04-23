@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\GenusScientistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -197,6 +198,17 @@ class Genus
     public function getGenusScientists(): Collection
     {
         return $this->genusScientists;
+    }
+
+    public function getExpertScientist()
+    {
+        $criteria = GenusScientistRepository::createExpertCriteria();
+
+        return $this->genusScientists->matching($criteria);
+
+//        return $this->genusScientists->filter(function (GenusScientist $genusScientist) {
+//            return $genusScientist->getYearsStudied() > 20;
+//        });
     }
 
     public function addGenusScientist(GenusScientist $genusScientist): self
