@@ -6,6 +6,7 @@ use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
 use AppBundle\Entity\GenusScientist;
 use AppBundle\Entity\User;
+use AppBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -73,10 +74,9 @@ class GenusController extends Controller
     /**
      * @Route("/genus/{slug}", name="genus_show")
      */
-    public function showAction(Genus $genus)
+    public function showAction(Genus $genus, MarkdownTransformer $markdownTransformer)
     {
-        $transformer = $this->get('app.markdown_transformer');
-        $funFact = $transformer->parse($genus->getFunFact());
+        $funFact = $markdownTransformer->parse($genus->getFunFact());
 
         $this->get('logger')
             ->info('Showing genus: ' . $genus->getName());
