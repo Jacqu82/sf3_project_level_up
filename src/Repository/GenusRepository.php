@@ -3,10 +3,17 @@
 namespace App\Repository;
 
 use App\Entity\Genus;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityRepository;
 
-class GenusRepository extends EntityRepository
+class GenusRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Genus::class);
+    }
+
     /**
      * @return Genus[]
      */

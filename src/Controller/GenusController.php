@@ -7,6 +7,7 @@ use App\Entity\GenusNote;
 use App\Entity\GenusScientist;
 use App\Entity\SubFamily;
 use App\Entity\User;
+use App\Repository\GenusRepository;
 use App\Service\MarkdownTransformer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -61,16 +62,14 @@ class GenusController extends AbstractController
     /**
      * @Route("/genus")
      */
-    public function listAction()
+    public function listAction(GenusRepository $genusRepository)
     {
-        $em = $this->getDoctrine()->getManager();
-        $genuses = $em->getRepository(Genus::class)->findAllPublishedOrderedByRecentlyActive();
+        $genuses = $genusRepository->findAllPublishedOrderedByRecentlyActive();
 
         return $this->render('genus/list.html.twig', [
             'genuses' => $genuses
         ]);
     }
-
 
     /**
      * @Route("/genus/{slug}", name="genus_show")

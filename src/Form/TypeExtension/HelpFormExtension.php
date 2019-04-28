@@ -22,9 +22,9 @@ class HelpFormExtension extends AbstractTypeExtension
         $resolver->setDefault('help', null);
     }
 
-    public function getExtendedTypes()
+    public static function getExtendedTypes()
     {
         //modify every form type in the system
-        return FormType::class;
+        return array(FormType::class);
     }
 }
