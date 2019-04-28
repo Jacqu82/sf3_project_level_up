@@ -1,23 +1,27 @@
 <?php
 
-
 namespace AppBundle\Security;
-
 
 use AppBundle\Entity\User;
 use AppBundle\Form\LoginForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
+    use TargetPathTrait;
+
     private $formFactory;
 
     private $em;
@@ -65,13 +69,23 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->passwordEncoder->isPasswordValid($user, $password);
     }
 
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
+
+        return new RedirectResponse($this->router->generate('homepage'));
+    }
+
     protected function getLoginUrl()
     {
         return $this->router->generate('security_login');
     }
 
-    protected function getDefaultSuccessRedirectUrl()
-    {
-        return $this->router->generate('homepage');
-    }
+    //to be used in symfony 3
+//    protected function getDefaultSuccessRedirectUrl()
+//    {
+//        return $this->router->generate('homepage');
+//    }
 }
