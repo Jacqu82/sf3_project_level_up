@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62cd1cadb0e6791a32e870f2be063c13",
+    "content-hash": "edb29f138dff2d2f0ba57bbff8aaf29d",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -3617,7 +3617,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",

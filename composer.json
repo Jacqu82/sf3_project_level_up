@@ -5,13 +5,11 @@
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-4": {
-            "AppBundle\\": "src/AppBundle",
             "App\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\AppBundle\\": "tests/AppBundle",
             "App\\Tests\\": "tests/"
         }
     },
@@ -30,7 +28,7 @@
         "symfony/asset": "4.2.*",
         "symfony/console": "^4.0",
         "symfony/flex": "^1.2",
-        "symfony/form": "4.2.*",
+        "symfony/form": "^4.2",
         "symfony/framework-bundle": "^4.0",
         "symfony/monolog-bundle": "^3.1",
         "symfony/profiler-pack": "^1.0",

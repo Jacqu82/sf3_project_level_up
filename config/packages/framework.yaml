@@ -9,10 +9,10 @@ framework:
     session:
         handler_id: ~
 #        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
-        cookie_secure: auto
-        cookie_samesite: lax
+#        cookie_secure: auto
+#        cookie_samesite: lax
 
     #esi: true
-    fragments: true
+#    fragments: true
     php_errors:
         log: true
