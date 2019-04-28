@@ -6,12 +6,12 @@ use AppBundle\Entity\User;
 use AppBundle\Form\UserEditForm;
 use AppBundle\Form\UserRegistrationForm;
 use AppBundle\Security\LoginFormAuthenticator;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
-class UserController extends Controller
+class UserController extends AbstractController
 {
     /**
      * @Route("/register", name="user_register")

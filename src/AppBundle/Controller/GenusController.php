@@ -8,13 +8,12 @@ use AppBundle\Entity\GenusScientist;
 use AppBundle\Entity\User;
 use AppBundle\Service\MarkdownTransformer;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class GenusController extends Controller
+class GenusController extends AbstractController
 {
     /**
      * @Route("/genus/new")
@@ -96,8 +95,7 @@ class GenusController extends Controller
     }
 
     /**
-     * @Route("/genus/{slug}/notes", name="genus_show_notes")
-     * @Method("GET")
+     * @Route("/genus/{slug}/notes", name="genus_show_notes", methods={"GET"})
      */
     public function getNotesAction(Genus $genus)
     {
@@ -126,8 +124,7 @@ class GenusController extends Controller
     }
 
     /**
-     * @Route("/genus/{genusId}/scientists/{userId}", name="genus_scientists_remove")
-     * @Method("DELETE")
+     * @Route("/genus/{genusId}/scientists/{userId}", name="genus_scientists_remove", methods={"DELETE"})
      */
     public function removeGenusScientistAction($genusId, $userId)
     {

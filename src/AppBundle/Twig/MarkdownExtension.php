@@ -3,8 +3,9 @@
 namespace AppBundle\Twig;
 
 use AppBundle\Service\MarkdownTransformer;
+use Twig\Extension\AbstractExtension;
 
-class MarkdownExtension extends \Twig_Extension
+class MarkdownExtension extends AbstractExtension
 {
     private $transformer;
 

@@ -4,14 +4,14 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Form\GenusFormType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin")
  */
-class GenusAdminController extends Controller
+class GenusAdminController extends AbstractController
 {
     /**
      * @Route("/genus", name="admin_genus_list")
