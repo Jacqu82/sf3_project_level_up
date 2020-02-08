@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SubFamilyRepository")
@@ -40,5 +41,17 @@ class SubFamily
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function isPropertyCollection(): array
+    {
+        $fields = [];
+        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
+            if ($fieldValue instanceof PersistentCollection) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 }

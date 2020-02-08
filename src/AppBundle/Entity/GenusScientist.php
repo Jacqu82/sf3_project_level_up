@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -101,5 +102,17 @@ class GenusScientist
         $this->yearsStudied = $yearsStudied;
 
         return $this;
+    }
+
+    public function isPropertyCollection(): array
+    {
+        $fields = [];
+        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
+            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 }

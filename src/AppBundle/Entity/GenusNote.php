@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusNoteRepository")
@@ -171,5 +172,17 @@ class GenusNote
     public function getGenus()
     {
         return $this->genus;
+    }
+
+    public function isPropertyCollection(): array
+    {
+        $fields = [];
+        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
+            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 }

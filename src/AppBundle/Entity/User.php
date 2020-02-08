@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -126,6 +127,11 @@ class User implements UserInterface
         return $this->password;
     }
 
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
     public function getSalt()
     {
         // leaving blank - I don't need/have a password!
@@ -144,11 +150,6 @@ class User implements UserInterface
     public function setEmail($email)
     {
         $this->email = $email;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $password;
     }
 
     public function getPlainPassword()
@@ -174,26 +175,6 @@ class User implements UserInterface
         $this->isScientist = $isScientist;
     }
 
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName()
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-    }
-
     public function getAvatarUri()
     {
         return $this->avatarUri;
@@ -216,7 +197,27 @@ class User implements UserInterface
 
     public function getFullName()
     {
-        return trim($this->getFirstName().' '.$this->getLastName());
+        return trim($this->getFirstName() . ' ' . $this->getLastName());
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
     }
 
     /**
@@ -225,6 +226,18 @@ class User implements UserInterface
     public function getStudiedGenuses(): Collection
     {
         return $this->studiedGenuses;
+    }
+
+    public function isPropertyCollection(): array
+    {
+        $fields = [];
+        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
+            if ($fieldValue instanceof PersistentCollection) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 
 //    public function addStudiedGenus(GenusScientist $genus)

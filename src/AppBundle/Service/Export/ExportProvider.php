@@ -6,9 +6,16 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ExportProvider
 {
-    public function export(string $data, string $format = 'json'): string
+    private $projectDir;
+
+    public function __construct(string $projectDir)
     {
-        $file = sprintf('%s/data.%s', $this->projectDir, $format);
+        $this->projectDir = $projectDir;
+    }
+
+    public function export(string $data, string $format, string $entityName): void
+    {
+        $file = sprintf('%s/%s.%s', $this->projectDir, $entityName, $format);
         if (file_exists($file)) {
             $fileSystem = new Filesystem();
             $fileSystem->remove($file);

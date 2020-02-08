@@ -3,9 +3,12 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Repository\GenusScientistRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -140,16 +143,9 @@ class Genus
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
-        return new \DateTime('-' . rand(0, 100) . ' days');
-    }
-
-    public function setIsPublished($isPublished): self
-    {
-        $this->isPublished = $isPublished;
-
-        return $this;
+        return new DateTime('-' . rand(0, 100) . ' days');
     }
 
     /**
@@ -160,6 +156,13 @@ class Genus
     public function getIsPublished()
     {
         return $this->isPublished;
+    }
+
+    public function setIsPublished($isPublished): self
+    {
+        $this->isPublished = $isPublished;
+
+        return $this;
     }
 
     /**
@@ -177,7 +180,7 @@ class Genus
         return $this->firstDiscoveredAt;
     }
 
-    public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null)
+    public function setFirstDiscoveredAt(DateTime $firstDiscoveredAt = null)
     {
         $this->firstDiscoveredAt = $firstDiscoveredAt;
     }
@@ -240,5 +243,17 @@ class Genus
         }
 
         return $this;
+    }
+
+    public function isPropertyCollection(): array
+    {
+        $fields = [];
+        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
+            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 }
