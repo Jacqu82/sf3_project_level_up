@@ -17,4 +17,5 @@
 /web/vendor/
 .idea/
 /tutorial/
+data.*
 
