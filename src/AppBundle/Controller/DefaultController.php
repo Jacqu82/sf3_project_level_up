@@ -7,6 +7,7 @@ use AppBundle\Service\Serializer\Encoder;
 use AppBundle\Service\StopWatchService;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -134,5 +135,50 @@ class DefaultController extends Controller
         $result = $stopWatchService->testStopWatch();
 
         return new Response('<body>' .$result. '</body>');
+    }
+
+    /**
+     * @Route("/entities")
+     */
+    public function entitiesAction()
+    {
+        $directory = sprintf('%s/src/AppBundle/Entity', $this->getParameter('kernel.project_dir'));
+        $finder = new Finder();
+        $files = $finder->in($directory);
+
+        $entities = [];
+        foreach ($files as $file) {
+            $entities[] = lcfirst(substr($file->getRelativePathname(), 0, -4));
+        }
+
+        return $this->render('default/list.html.twig', [
+            'entities' => $entities
+        ]);
+    }
+
+    /**
+     * @Route("/entity-files/{entity}", name="file_entity")
+     */
+    public function entityFilesAction(string $entity)
+    {
+        $directory = sprintf('%s/web/export/%s', $this->getParameter('kernel.project_dir'), $entity);
+        $finder = new Finder();
+        $files = $finder->in($directory);
+        $entityFiles = [];
+        foreach ($files as $file) {
+            $entityFiles[] = $file->getRelativePathname();
+        }
+
+        return $this->render('default/show.html.twig', [
+            'entityFiles' => $entityFiles
+        ]);
+    }
+
+    /**
+     * @Route("/download")
+     */
+    public function downloadAction()
+    {
+
     }
 }

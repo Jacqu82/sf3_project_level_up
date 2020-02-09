@@ -15,7 +15,8 @@
 /vendor/
 /web/bundles/
 /web/vendor/
+/web/export/
 .idea/
 /tutorial/
-/*.json
+
 
