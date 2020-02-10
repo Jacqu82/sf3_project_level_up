@@ -207,8 +207,8 @@ class DefaultController extends Controller
         }
 
         $response = new BinaryFileResponse($fileToDownload);
-        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
 
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
         // Set the mimetype with the guesser or manually
         if ($mimeTypeGuesser::isSupported()) {
             // Guess the mimetype of the file according to the extension of the file
@@ -218,13 +218,13 @@ class DefaultController extends Controller
             $response->headers->set('Content-Type', 'text/plain');
         }
 
+        $filenameFallback = preg_replace('#^.*\.#', md5($file) . '.', $file);
         // Set content disposition inline of the file
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $fileToDownload
+            $file,
+            $filenameFallback
         );
-
-        $response->setContent(file_get_contents($fileToDownload));
 
         return $response;
     }
