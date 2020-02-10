@@ -4,6 +4,9 @@ namespace AppBundle\Service\Export;
 
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
+ */
 class ExportProvider
 {
     private $projectDir;

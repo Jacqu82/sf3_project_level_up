@@ -16,7 +16,9 @@
                     {{ file }}
                 </td>
                 <td>
-                    {{ file }}
+                    <a href="{{ path('app_default_download', {entity: entity, file: file}) }}">
+                        {{ file }}
+                    </a>
                 </td>
             </tr>
         {% endfor %}

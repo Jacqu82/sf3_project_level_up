@@ -13,8 +13,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 
 /**
- * Class Serializer
- * @package AppBundle\Service\Export
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class Serializer
 {

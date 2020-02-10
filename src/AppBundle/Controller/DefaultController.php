@@ -8,8 +8,12 @@ use AppBundle\Service\StopWatchService;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\File\MimeType\FileinfoMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
@@ -20,6 +24,9 @@ use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
+ */
 class DefaultController extends Controller
 {
     /**
@@ -96,7 +103,7 @@ class DefaultController extends Controller
 //        $json = $serializer->serialize($data, 'json');
 
 
-        return new Response('<body>Pliczek zapisany w formacie: '.$format.'</body>');
+        return new Response('<body>Pliczek zapisany w formacie: ' . $format . '</body>');
     }
 
     /**
@@ -134,11 +141,11 @@ class DefaultController extends Controller
     {
         $result = $stopWatchService->testStopWatch();
 
-        return new Response('<body>' .$result. '</body>');
+        return new Response('<body>' . $result . '</body>');
     }
 
     /**
-     * @Route("/entities")
+     * @Route("/entities", name="entities")
      */
     public function entitiesAction()
     {
@@ -151,9 +158,12 @@ class DefaultController extends Controller
             $entities[] = lcfirst(substr($file->getRelativePathname(), 0, -4));
         }
 
-        return $this->render('default/list.html.twig', [
-            'entities' => $entities
-        ]);
+        return $this->render(
+            'default/list.html.twig',
+            [
+                'entities' => $entities,
+            ]
+        );
     }
 
     /**
@@ -162,6 +172,14 @@ class DefaultController extends Controller
     public function entityFilesAction(string $entity)
     {
         $directory = sprintf('%s/web/export/%s', $this->getParameter('kernel.project_dir'), $entity);
+        if (!file_exists($directory)) {
+            $this->addFlash(
+                'danger',
+                sprintf('Nie znaleziono katalogu %s. Utwórz export dla encji: %s.', $entity, $entity)
+            );
+            return $this->redirectToRoute('entities');
+        }
+
         $finder = new Finder();
         $files = $finder->in($directory);
         $entityFiles = [];
@@ -169,16 +187,45 @@ class DefaultController extends Controller
             $entityFiles[] = $file->getRelativePathname();
         }
 
-        return $this->render('default/show.html.twig', [
-            'entityFiles' => $entityFiles
-        ]);
+        return $this->render(
+            'default/show.html.twig',
+            [
+                'entityFiles' => $entityFiles,
+                'entity' => $entity
+            ]
+        );
     }
 
     /**
-     * @Route("/download")
+     * @Route("/download/{entity}/{file}")
      */
-    public function downloadAction()
+    public function downloadAction(string $entity, string $file)
     {
+        $fileToDownload = sprintf('%s/web/export/%s/%s', $this->getParameter('kernel.project_dir'), $entity, $file);
+        if (!file_exists($fileToDownload)) {
+            throw new FileNotFoundException($fileToDownload);
+        }
 
+        $response = new BinaryFileResponse($fileToDownload);
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+
+        // Set the mimetype with the guesser or manually
+        if ($mimeTypeGuesser::isSupported()) {
+            // Guess the mimetype of the file according to the extension of the file
+            $response->headers->set('Content-Type', $mimeTypeGuesser->guess($fileToDownload));
+        } else {
+            // Set the mimetype of the file manually, in this case for a text file is text/plain
+            $response->headers->set('Content-Type', 'text/plain');
+        }
+
+        // Set content disposition inline of the file
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $fileToDownload
+        );
+
+        $response->setContent(file_get_contents($fileToDownload));
+
+        return $response;
     }
 }
