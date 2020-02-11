@@ -8,13 +8,15 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
  * @ORM\Table(name="genus")
+ *
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class Genus
 {
@@ -22,6 +24,7 @@ class Genus
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Groups({"export"})
      */
     private $id;
 
@@ -46,18 +49,21 @@ class Genus
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
      * @Assert\NotBlank()
+     * @Groups({"export"})
      */
     private $subFamily;
 
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     * @Groups({"export"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", unique=true)
      * @Gedmo\Slug(fields={"name"})
+     * @Groups({"export"})
      */
     private $slug;
 
@@ -65,22 +71,26 @@ class Genus
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
      * @Assert\Range(min="0", minMessage="Negative species! Come on...")
+     * @Groups({"export"})
      */
     private $speciesCount;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"export"})
      */
     private $funFact;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"export"})
      */
     private $isPublished = true;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank()
+     * @Groups({"export"})
      */
     private $firstDiscoveredAt;
 
@@ -243,17 +253,5 @@ class Genus
         }
 
         return $this;
-    }
-
-    public function isPropertyCollection(): array
-    {
-        $fields = [];
-        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
-            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
-                $fields[] = $fieldName;
-            }
-        }
-
-        return $fields;
     }
 }

@@ -3,11 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SubFamilyRepository")
  * @ORM\Table(name="sub_family")
+ *
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class SubFamily
 {
@@ -15,11 +17,13 @@ class SubFamily
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Groups({"export"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"export"})
      */
     private $name;
 
@@ -41,17 +45,5 @@ class SubFamily
     public function setName($name)
     {
         $this->name = $name;
-    }
-
-    public function isPropertyCollection(): array
-    {
-        $fields = [];
-        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
-            if ($fieldValue instanceof PersistentCollection) {
-                $fields[] = $fieldName;
-            }
-        }
-
-        return $fields;
     }
 }

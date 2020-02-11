@@ -5,10 +5,10 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="user")
  * @UniqueEntity(fields={"email"}, message="It looks like you already have an account!")
  * @Serializer\ExclusionPolicy("all")
+ *
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class User implements UserInterface
 {
@@ -23,6 +25,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Groups({"export"})
      */
     private $id;
 
@@ -36,6 +39,7 @@ class User implements UserInterface
      * @Assert\Email()
      * @ORM\Column(type="string", unique=true)
      * @Serializer\Expose
+     * @Groups({"export"})
      */
     private $email;
 
@@ -56,35 +60,40 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json_array")
+     * @Groups({"export"})
      */
     private $roles = [];
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"export"})
      */
     private $isScientist = false;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Expose
-     *
+     * @Groups({"export"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Expose
+     * @Groups({"export"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"export"})
      */
     private $avatarUri;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Expose
+     * @Groups({"export"})
      */
     private $universityName;
 
@@ -226,18 +235,6 @@ class User implements UserInterface
     public function getStudiedGenuses(): Collection
     {
         return $this->studiedGenuses;
-    }
-
-    public function isPropertyCollection(): array
-    {
-        $fields = [];
-        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
-            if ($fieldValue instanceof PersistentCollection) {
-                $fields[] = $fieldName;
-            }
-        }
-
-        return $fields;
     }
 
 //    public function addStudiedGenus(GenusScientist $genus)

@@ -3,14 +3,16 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusScientistRepository")
  * @ORM\Table(name="genus_scientist")
  * @UniqueEntity(fields={"genus", "user"}, message="This user is already studying this genus", errorPath="user")
+ *
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class GenusScientist
 {
@@ -18,24 +20,28 @@ class GenusScientist
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Groups({"export"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genus", inversedBy="genusScientists")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"export"})
      */
     private $genus;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"export"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
+     * @Groups({"export"})
      */
     private $yearsStudied;
 
@@ -102,17 +108,5 @@ class GenusScientist
         $this->yearsStudied = $yearsStudied;
 
         return $this;
-    }
-
-    public function isPropertyCollection(): array
-    {
-        $fields = [];
-        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
-            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
-                $fields[] = $fieldName;
-            }
-        }
-
-        return $fields;
     }
 }

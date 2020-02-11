@@ -2,12 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusNoteRepository")
  * @ORM\Table(name="genus_note")
+ *
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
 class GenusNote
 {
@@ -15,32 +18,38 @@ class GenusNote
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Groups({"export"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genus", inversedBy="notes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"export"})
      */
     private $genus;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"export"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"export"})
      */
     private $userAvatarFilename;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"export"})
      */
     private $note;
-    
+
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"export"})
      */
     private $createdAt;
 
@@ -52,6 +61,16 @@ class GenusNote
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
     /**
@@ -69,13 +88,13 @@ class GenusNote
     }
 
     /**
-     * Get username
+     * Get userAvatarFilename
      *
      * @return string
      */
-    public function getUsername()
+    public function getUserAvatarFilename()
     {
-        return $this->username;
+        return $this->userAvatarFilename;
     }
 
     /**
@@ -93,13 +112,13 @@ class GenusNote
     }
 
     /**
-     * Get userAvatarFilename
+     * Get note
      *
      * @return string
      */
-    public function getUserAvatarFilename()
+    public function getNote()
     {
-        return $this->userAvatarFilename;
+        return $this->note;
     }
 
     /**
@@ -117,33 +136,9 @@ class GenusNote
     }
 
     /**
-     * Get note
-     *
-     * @return string
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return GenusNote
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -151,15 +146,15 @@ class GenusNote
     }
 
     /**
-     * Set genus
+     * Set createdAt
      *
-     * @param Genus $genus
+     * @param DateTime $createdAt
      *
      * @return GenusNote
      */
-    public function setGenus(Genus $genus)
+    public function setCreatedAt($createdAt)
     {
-        $this->genus = $genus;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -174,15 +169,17 @@ class GenusNote
         return $this->genus;
     }
 
-    public function isPropertyCollection(): array
+    /**
+     * Set genus
+     *
+     * @param Genus $genus
+     *
+     * @return GenusNote
+     */
+    public function setGenus(Genus $genus)
     {
-        $fields = [];
-        foreach (get_object_vars($this) as $fieldName => $fieldValue) {
-            if ($fieldValue instanceof PersistentCollection || is_object($fieldValue)) {
-                $fields[] = $fieldName;
-            }
-        }
+        $this->genus = $genus;
 
-        return $fields;
+        return $this;
     }
 }
