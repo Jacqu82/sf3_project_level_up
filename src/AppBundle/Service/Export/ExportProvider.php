@@ -16,10 +16,11 @@ class ExportProvider
         $this->projectDir = $projectDir;
     }
 
-    public function export(string $data, string $format, string $entityName): void
+    public function export(string $data, string $format, string $entityName, bool $backToImport, ?int $id): void
     {
         $this->findByDirectory($entityName);
-        $file = sprintf('%s/web/export/%s/%s.%s', $this->projectDir, $entityName, $entityName, $format);
+        $entityNameImport = sprintf('%s%s', $entityName, $this->intentionalFilenameExport($backToImport, $id));
+        $file = sprintf('%s/web/export/%s/%s.%s', $this->projectDir, $entityName, $entityNameImport, $format);
         if (file_exists($file)) {
             $fileSystem = new Filesystem();
             $fileSystem->remove($file);
@@ -34,5 +35,26 @@ class ExportProvider
         if (false === is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
+    }
+
+    private function intentionalFilenameExport(bool $backToImport, ?int $id): string
+    {
+        if (false === $backToImport && null === $id) {
+            return 's';
+        }
+
+        if (false === $backToImport && null !== $id) {
+            return '';
+        }
+
+        if (true === $backToImport && null === $id) {
+            return 'sImport';
+        }
+
+        if (true === $backToImport && null !== $id) {
+            return 'Import';
+        }
+
+        return '';
     }
 }

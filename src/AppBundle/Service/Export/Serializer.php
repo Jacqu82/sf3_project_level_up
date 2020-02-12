@@ -31,35 +31,53 @@ class Serializer
         $this->exportProvider = $exportProvider;
     }
 
-    public function serialize(string $entity, string $format): void
+    public function serialize(string $entity, string $format, bool $backToImport, ?int $id): void
     {
-        $data = $this->getDataToSerialize($entity);
+        $data = $this->getDataToSerialize($entity, $backToImport, $id);
         $data = $this->setSerializer()->serialize($data, $format, ['groups' => ['export']]);
 
-        $this->exportProvider->export($data, $format, $entity);
+        $this->exportProvider->export($data, $format, $entity, $backToImport, $id);
     }
 
-    private function getDataToSerialize(string $entityName): array
+    private function getDataToSerialize(string $entityName, bool $backToImport, ?int $id): array
     {
-        $isEntityEndsWithS = 's' === substr($entityName, -1);
-        $collectionKeyName = sprintf('%s%s', strtolower($entityName), $isEntityEndsWithS ? 'es' : 's');
-        $dateTime = new DateTime();
-        $data = [
-//            'created_at' => $saveDateTime = sprintf('Data utworzenia exportu: %s', $dateTime->format('H:i:s d.m.Y')),
-//            $collectionKeyName => [],
-        ];
+        $collectionKeyName = '';
+        if (true === $backToImport) {
+            $data = [];
+        } else {
+            $isEntityEndsWithS = 's' === substr($entityName, -1);
+            $collectionKeyName = sprintf('%s%s', strtolower($entityName), $isEntityEndsWithS ? 'es' : 's');
+            $dateTime = new DateTime();
+            $data = [
+                'created_at' => $saveDateTime = sprintf(
+                    'Data utworzenia exportu: %s',
+                    $dateTime->format('H:i:s d.m.Y')
+                ),
+                $collectionKeyName => [],
+            ];
+        }
 
-        $entityArray = $this->chooseEntityToExport($entityName);
+        $entityArray = $this->chooseEntityToExport($entityName, $id);
         foreach ($entityArray as $entity) {
-            $data[] = $entity;
+            if (true === $backToImport) {
+                $data[] = $entity;
+            } else {
+                $data[$collectionKeyName][] = $entity;
+            }
         }
 
         return $data;
     }
 
-    private function chooseEntityToExport(string $entity): array
+    private function chooseEntityToExport(string $entity, ?int $id): array
     {
-        return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->findAll();
+        if (null === $id) {
+            return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->findAll();
+        }
+
+        return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->findBy(
+            ['id' => $id]
+        );
     }
 
     private function setSerializer(): SymfonySerializer

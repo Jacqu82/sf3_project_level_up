@@ -9,6 +9,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
+ */
 class TrainingCommand extends Command
 {
     protected static $defaultName = 'app:training_command';
