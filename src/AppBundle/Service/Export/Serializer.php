@@ -45,13 +45,13 @@ class Serializer
         $collectionKeyName = sprintf('%s%s', strtolower($entityName), $isEntityEndsWithS ? 'es' : 's');
         $dateTime = new DateTime();
         $data = [
-            'created_at' => $saveDateTime = sprintf('Data utworzenia exportu: %s', $dateTime->format('H:i:s d.m.Y')),
-            $collectionKeyName => [],
+//            'created_at' => $saveDateTime = sprintf('Data utworzenia exportu: %s', $dateTime->format('H:i:s d.m.Y')),
+//            $collectionKeyName => [],
         ];
 
         $entityArray = $this->chooseEntityToExport($entityName);
         foreach ($entityArray as $entity) {
-            $data[$collectionKeyName][] = $entity;
+            $data[] = $entity;
         }
 
         return $data;

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Service\Import\Deserializer;
 use AppBundle\Service\Serializer\Encoder;
 use AppBundle\Service\StopWatchService;
 use JMS\Serializer\SerializationContext;
@@ -227,5 +228,13 @@ class DefaultController extends Controller
         );
 
         return $response;
+    }
+
+    /**
+     * @Route("/deserialize")
+     */
+    public function testDeserialize(Deserializer $deserializer)
+    {
+        $deserializer->deserialize();
     }
 }

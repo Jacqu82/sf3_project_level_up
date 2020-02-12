@@ -49,3 +49,10 @@ services:
     AppBundle\Form\TypeExtension\HelpFormExtension:
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    AppBundle\Service\Import\EntityNormalizer:
+        public: false
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: serializer.normalizer }
