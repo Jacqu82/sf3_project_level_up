@@ -2,6 +2,9 @@
 
 {% block body %}
 
+    {% set roles = app.user ? app.user.roles : [] %}
+    {% set entityFiles = isImport(entityFiles, roles) %}
+
     <table class="table table-striped">
         <thead>
         <tr>
