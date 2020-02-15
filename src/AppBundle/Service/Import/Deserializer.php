@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service\Import;
 
+use AppBundle\Entity\User;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
@@ -11,7 +12,10 @@ use Symfony\Component\Serializer\Encoder\YamlEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 /**
@@ -29,16 +33,13 @@ class Deserializer
         $this->entityManager = $entityManager;
     }
 
-    public function deserialize()
+    public function deserialize(): void
     {
-        $data = file_get_contents(sprintf('%s/web/import/user.json', $this->projectDir));
+        $data = file_get_contents(sprintf('%s/web/import/userImport.json', $this->projectDir));
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => 5]);
+        $this->setDeserializer()->deserialize($data, User::class, 'json', ['object_to_populate' => $user]);
 
-//        dump($data);die;
-
-        $arrayObject = $this->setDeserializer()->deserialize($data, 'AppBundle\Entity\User[]', 'json');
-
-        dump($arrayObject);
-        die;
+        $this->entityManager->flush();
     }
 
     private function setDeserializer(): Serializer
@@ -49,12 +50,12 @@ class Deserializer
 
         return new Serializer(
             [
+//                new EntityNormalizer($this->entityManager),
                 $normalizer,
                 new ArrayDenormalizer(),
-//                new GetSetMethodNormalizer(),
-//                new PropertyNormalizer(),
-//                new JsonSerializableNormalizer(),
-                new EntityNormalizer($this->entityManager)
+                new PropertyNormalizer(),
+                new GetSetMethodNormalizer(),
+                new JsonSerializableNormalizer()
 //                new DateTimeNormalizer(),
 //                new DataUriNormalizer(),
 //                new DateIntervalNormalizer(),

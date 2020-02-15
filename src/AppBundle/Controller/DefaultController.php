@@ -235,7 +235,8 @@ class DefaultController extends Controller
      */
     public function testDeserialize(Deserializer $deserializer)
     {
-
         $deserializer->deserialize();
+        echo 'Import udany ;)';
+        die;
     }
 }

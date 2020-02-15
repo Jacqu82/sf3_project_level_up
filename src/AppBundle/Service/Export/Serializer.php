@@ -5,6 +5,7 @@ namespace AppBundle\Service\Export;
 use DateTime;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -39,7 +40,16 @@ class Serializer
         $this->exportProvider->export($data, $format, $entity, $backToImport, $id);
     }
 
-    private function getDataToSerialize(string $entityName, bool $backToImport, ?int $id): array
+    /**
+     * @param string $entityName
+     * @param bool $backToImport
+     * @param int|null $id
+     *
+     * @return array|object
+     *
+     * @throws Exception
+     */
+    private function getDataToSerialize(string $entityName, bool $backToImport, ?int $id)
     {
         $collectionKeyName = '';
         if (true === $backToImport) {
@@ -58,26 +68,39 @@ class Serializer
         }
 
         $entityArray = $this->chooseEntityToExport($entityName, $id);
-        foreach ($entityArray as $entity) {
+        if (is_array($entityArray)) {
+            foreach ($entityArray as $entity) {
+                if (true === $backToImport) {
+                    $data[] = $entity;
+                } else {
+                    $data[$collectionKeyName][] = $entity;
+                }
+            }
+        }
+
+        if (is_object($entityArray)) {
             if (true === $backToImport) {
-                $data[] = $entity;
+                $data = $entityArray;
             } else {
-                $data[$collectionKeyName][] = $entity;
+                $data[$collectionKeyName][] = $entityArray;
             }
         }
 
         return $data;
     }
 
-    private function chooseEntityToExport(string $entity, ?int $id): array
+    /**
+     * @param string $entity
+     * @param int|null $id
+     * @return array|object
+     */
+    private function chooseEntityToExport(string $entity, ?int $id)
     {
         if (null === $id) {
             return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->findAll();
         }
 
-        return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->findBy(
-            ['id' => $id]
-        );
+        return $this->entityManager->getRepository(sprintf('AppBundle\Entity\%s', ucfirst($entity)))->find($id);
     }
 
     private function setSerializer(): SymfonySerializer
