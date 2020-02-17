@@ -35,9 +35,9 @@ class Deserializer
 
     public function deserialize(): void
     {
-        $data = file_get_contents(sprintf('%s/web/import/userImport.json', $this->projectDir));
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => 5]);
-        $this->setDeserializer()->deserialize($data, User::class, 'json', ['object_to_populate' => $user]);
+        $data = file_get_contents(sprintf('%s/web/import/userImport.xml', $this->projectDir));
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => 6]);
+        $this->setDeserializer()->deserialize($data, User::class, 'xml', ['object_to_populate' => $user]);
 
         $this->entityManager->flush();
     }
