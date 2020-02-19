@@ -19,8 +19,8 @@ class ExportProvider
     public function export(string $data, string $format, string $entityName, bool $backToImport, ?int $id): void
     {
         $this->findByDirectory($entityName);
-        $entityNameImport = sprintf('%s%s', $entityName, $this->intentionalFilenameExport($backToImport, $id));
-        $file = sprintf('%s/web/export/%s/%s.%s', $this->projectDir, $entityName, $entityNameImport, $format);
+        $entityNameExport = sprintf('%s%s', $entityName, $this->intentionalFilenameExport($backToImport, $id));
+        $file = sprintf('%s/web/export/%s/%s.%s', $this->projectDir, $entityName, $entityNameExport, $format);
         if (file_exists($file)) {
             $fileSystem = new Filesystem();
             $fileSystem->remove($file);

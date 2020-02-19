@@ -33,7 +33,7 @@ class ExportCommand extends Command
             ->addArgument('singleEntity', InputArgument::OPTIONAL, 'Put id entity to export');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $entity = $input->getArgument('entity');
         $format = $input->getArgument('format');

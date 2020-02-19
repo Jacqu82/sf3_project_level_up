@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
-class ImportType extends AbstractType
+class ExportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

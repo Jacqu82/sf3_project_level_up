@@ -92,6 +92,7 @@ class Serializer
     /**
      * @param string $entity
      * @param int|null $id
+     *
      * @return array|object
      */
     private function chooseEntityToExport(string $entity, ?int $id)
