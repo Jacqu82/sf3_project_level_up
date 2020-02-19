@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * @author Jacek Wesołowski <jacqu25@yahoo.com>
  */
-class ImportProvider
+class UploadHelper
 {
     private $projectDir;
 

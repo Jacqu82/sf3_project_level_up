@@ -6,7 +6,8 @@
         <thead>
         <tr>
             <th>Entity</th>
-            <th>Files do download</th>
+            <th>Files to download</th>
+            <th>Files to import (unserialize)</th>
         </tr>
         </thead>
         <tbody>
@@ -17,6 +18,11 @@
                 </td>
                 <td>
                     <a href="{{ path('file_entity', {entity: entity}) }}">
+                        {{ entity }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('app_serializer_unserializefiles', {entity: entity}) }}">
                         {{ entity }}
                     </a>
                 </td>

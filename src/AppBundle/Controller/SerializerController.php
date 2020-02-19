@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Form\ExportType;
 use AppBundle\Form\ImportType;
 use AppBundle\Service\Export\Serializer;
-use AppBundle\Service\Import\ImportProvider;
+use AppBundle\Service\Import\UploadHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -21,6 +21,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SerializerController extends Controller
 {
+    private $projectDir;
+
+    public function __construct(string $projectDir)
+    {
+        $this->projectDir = $projectDir;
+    }
+
     /**
      * @Route("/entities", name="entities")
      */
@@ -36,7 +43,7 @@ class SerializerController extends Controller
 
     private function getEntityNames(): array
     {
-        $directory = sprintf('%s/src/AppBundle/Entity', $this->getParameter('kernel.project_dir'));
+        $directory = sprintf('%s/src/AppBundle/Entity', $this->projectDir);
         $finder = new Finder();
 
         $files = $finder->in($directory);
@@ -54,7 +61,7 @@ class SerializerController extends Controller
      */
     public function entityFilesAction(string $entity): Response
     {
-        $directory = sprintf('%s/web/export/%s', $this->getParameter('kernel.project_dir'), $entity);
+        $directory = sprintf('%s/web/export/%s', $this->projectDir, $entity);
         if (!file_exists($directory)) {
             $this->addFlash(
                 'danger',
@@ -84,7 +91,7 @@ class SerializerController extends Controller
      */
     public function downloadAction(string $entity, string $file): Response
     {
-        $fileToDownload = sprintf('%s/web/export/%s/%s', $this->getParameter('kernel.project_dir'), $entity, $file);
+        $fileToDownload = sprintf('%s/web/export/%s/%s', $this->projectDir, $entity, $file);
         if (!file_exists($fileToDownload)) {
             throw new FileNotFoundException($fileToDownload);
         }
@@ -141,9 +148,9 @@ class SerializerController extends Controller
     }
 
     /**
-     * @Route("/import-data")
+     * @Route("/upload")
      */
-    public function deserializeAction(Request $request, ImportProvider $importProvider): Response
+    public function uploadAction(Request $request, UploadHelper $uploadHelper): Response
     {
         $form = $this->createForm(ImportType::class);
         $form->handleRequest($request);
@@ -151,7 +158,7 @@ class SerializerController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $form['file']->getData();
             $entities = $this->getEntityNames();
-            $originalFilename = $importProvider->moveUploadedFile($uploadedFile, $entities);
+            $originalFilename = $uploadHelper->moveUploadedFile($uploadedFile, $entities);
 
             $this->addFlash(
                 'success',
@@ -165,5 +172,30 @@ class SerializerController extends Controller
                 'form' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Route("/unserialize-files/{entity}")
+     */
+    public function unserializeFilesAction(string $entity)
+    {
+        $directory = sprintf('%s/web/import/%s', $this->projectDir, $entity);
+        if (!file_exists($directory)) {
+            $this->addFlash(
+                'danger',
+                sprintf('Nie znaleziono katalogu %s. Wrzuć plik dla encji: %s.', $entity, $entity)
+            );
+            return $this->redirectToRoute('entities');
+        }
+
+        $finder = new Finder();
+        $files = $finder->in($directory);
+        $entityFiles = [];
+        foreach ($files as $file) {
+            $entityFiles[] = $file->getRelativePathname();
+        }
+
+        dump($entityFiles);
+        die;
     }
 }
