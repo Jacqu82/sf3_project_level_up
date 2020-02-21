@@ -32,11 +32,21 @@
 
 <div class="main-content">
 
+    {% set route = app.request.get('_route') %}
+    {% set dangerMessage = app.session.flashBag.get('danger') %}
+
+    {% if route == 'entities' and dangerMessage is not empty and dangerMessage[0]|first == 'no entity' %}
+        <div class="alert alert-danger">
+            Nie znaleziono katalogu {{ dangerMessage[0]|last }}. Wrzuć plik dla encji {{ dangerMessage[0]|last }}
+            <a href="{{ path('app_serializer_upload') }}" target="_blank">Tutaj</a>
+        </div>
+    {% endif %}
+
     {% for message in app.session.flashBag.get('success') %}
         <div class="alert alert-success">{{ message }}</div>
     {% endfor %}
 
-    {% for message in app.session.flashBag.get('danger') %}
+    {% for message in dangerMessage if dangerMessage[0]|first != 'no entity' %}
         <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
 

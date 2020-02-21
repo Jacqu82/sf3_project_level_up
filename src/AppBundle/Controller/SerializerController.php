@@ -8,6 +8,7 @@ use AppBundle\Service\Export\Serializer;
 use AppBundle\Service\Import\UploadHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\MimeType\FileinfoMimeTypeGuesser;
@@ -49,6 +50,7 @@ class SerializerController extends Controller
         $files = $finder->in($directory);
 
         $entities = [];
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $entities[] = lcfirst(substr($file->getRelativePathname(), 0, -4));
         }
@@ -73,6 +75,7 @@ class SerializerController extends Controller
         $finder = new Finder();
         $files = $finder->in($directory);
         $entityFiles = [];
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $entityFiles[] = $file->getRelativePathname();
         }
@@ -181,16 +184,14 @@ class SerializerController extends Controller
     {
         $directory = sprintf('%s/web/import/%s', $this->projectDir, $entity);
         if (!file_exists($directory)) {
-            $this->addFlash(
-                'danger',
-                sprintf('Nie znaleziono katalogu %s. Wrzuć plik dla encji: %s.', $entity, $entity)
-            );
+            $this->addFlash('danger', ['no entity', $entity]);
             return $this->redirectToRoute('entities');
         }
 
         $finder = new Finder();
         $files = $finder->in($directory);
         $entityFiles = [];
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $entityFiles[] = $file->getRelativePathname();
         }

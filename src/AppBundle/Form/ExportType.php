@@ -45,6 +45,7 @@ class ExportType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Id encji',
+                    'help' => 'Pozostaw puste, jeśli chcesz wybrać wszystkie dane'
                 ]
             )
             ->add(
