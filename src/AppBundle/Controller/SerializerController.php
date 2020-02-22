@@ -44,22 +44,6 @@ class SerializerController extends Controller
         );
     }
 
-    private function getEntityNames(): array
-    {
-        $directory = sprintf('%s/src/AppBundle/Entity', $this->projectDir);
-        $finder = new Finder();
-
-        $files = $finder->in($directory);
-
-        $entities = [];
-        /** @var SplFileInfo $file */
-        foreach ($files as $file) {
-            $entities[] = lcfirst(substr($file->getRelativePathname(), 0, -4));
-        }
-
-        return $entities;
-    }
-
     /**
      * @Route("/entity-files/{entity}", name="file_entity")
      */
@@ -201,5 +185,21 @@ class SerializerController extends Controller
         $deserializer->prepareFileToImport($entityFile);
 
         return $this->redirectToRoute('entities');
+    }
+
+    private function getEntityNames(): array
+    {
+        $directory = sprintf('%s/src/AppBundle/Entity', $this->projectDir);
+        $finder = new Finder();
+
+        $files = $finder->in($directory);
+
+        $entities = [];
+        /** @var SplFileInfo $file */
+        foreach ($files as $file) {
+            $entities[] = lcfirst(substr($file->getRelativePathname(), 0, -4));
+        }
+
+        return $entities;
     }
 }
