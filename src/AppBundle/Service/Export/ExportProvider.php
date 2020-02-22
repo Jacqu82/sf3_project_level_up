@@ -48,7 +48,7 @@ class ExportProvider
         }
 
         if (true === $backToImport && null === $id) {
-            return 'sImport';
+            return 'Imports';
         }
 
         if (true === $backToImport && null !== $id) {

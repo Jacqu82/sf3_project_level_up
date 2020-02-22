@@ -2,6 +2,9 @@
 
 namespace AppBundle\Service\Import;
 
+use Exception;
+use RuntimeException;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -20,8 +23,9 @@ class UploadHelper
     {
         $directory = '';
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $originalFilenameCut = substr($originalFilename, 0, strpos($originalFilename, 'Import'));
         foreach ($entities as $entity) {
-            if (strpos($originalFilename, $entity) !== false) {
+            if ($originalFilenameCut === $entity) {
                 $directory = $this->findByDirectory($entity);
                 break;
             }
@@ -40,6 +44,23 @@ class UploadHelper
             mkdir($directory, 0777, true);
         }
 
+        $this->isDirectoryEmtpy($directory, $entityName);
+
         return $directory;
+    }
+
+    /**
+     * @param string $directory
+     * @param string $entityName
+     *
+     * @throws Exception
+     */
+    private function isDirectoryEmtpy(string $directory, string $entityName)
+    {
+        $finder = new Finder();
+        $files = $finder->in($directory);
+        if (true === $files->hasResults()) {
+            throw new RuntimeException(sprintf('Dane dla encji %s są już przesłane!', $entityName));
+        }
     }
 }
