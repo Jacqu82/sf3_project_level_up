@@ -27,14 +27,12 @@ class GenusScientist
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genus", inversedBy="genusScientists")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"export"})
      */
     private $genus;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="studiedGenuses")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"export"})
      */
     private $user;
 

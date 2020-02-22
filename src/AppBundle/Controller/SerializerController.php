@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Form\ExportType;
 use AppBundle\Form\ImportType;
 use AppBundle\Service\Export\Serializer;
+use AppBundle\Service\Import\Deserializer;
 use AppBundle\Service\Import\UploadHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
@@ -12,6 +13,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\MimeType\FileinfoMimeTypeGuesser;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -180,7 +182,7 @@ class SerializerController extends Controller
     /**
      * @Route("/unserialize-files/{entity}")
      */
-    public function unserializeFilesAction(string $entity)
+    public function unserializeFilesAction(string $entity, Deserializer $deserializer): RedirectResponse
     {
         $directory = sprintf('%s/web/import/%s', $this->projectDir, $entity);
         if (!file_exists($directory)) {
@@ -190,13 +192,14 @@ class SerializerController extends Controller
 
         $finder = new Finder();
         $files = $finder->in($directory);
-        $entityFiles = [];
+        $entityFile = null;
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $entityFiles[] = $file->getRelativePathname();
+            $entityFile = $file->getRelativePathname();
         }
 
-        dump($entityFiles);
-        die;
+        $deserializer->prepareFileToImport($entityFile);
+
+        return $this->redirectToRoute('entities');
     }
 }

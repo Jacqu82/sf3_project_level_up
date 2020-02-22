@@ -25,7 +25,6 @@ class GenusNote
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genus", inversedBy="notes")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"export"})
      */
     private $genus;
 
@@ -49,7 +48,6 @@ class GenusNote
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"export"})
      */
     private $createdAt;
 

@@ -52,7 +52,7 @@ class ExportProvider
         }
 
         if (true === $backToImport && null !== $id) {
-            return 'Import';
+            return 'Import_' . $id;
         }
 
         return '';

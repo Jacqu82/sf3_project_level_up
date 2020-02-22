@@ -2,9 +2,10 @@
 
 namespace AppBundle\Service\Import;
 
-use AppBundle\Entity\User;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -27,35 +28,65 @@ class Deserializer
 
     private $entityManager;
 
-    public function __construct(string $projectDir, EntityManagerInterface $entityManager)
+    private $session;
+
+    public function __construct(string $projectDir, EntityManagerInterface $entityManager, SessionInterface $session)
     {
         $this->projectDir = $projectDir;
         $this->entityManager = $entityManager;
+        $this->session = $session;
     }
 
-    public function deserialize(): void
+    public function prepareFileToImport(string $entityFile): void
     {
-        $data = file_get_contents(sprintf('%s/web/import/userImport.xml', $this->projectDir));
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => 6]);
-        $this->setDeserializer()->deserialize($data, User::class, 'xml', ['object_to_populate' => $user]);
+        list($fileName, $format) = explode('.', $entityFile);
+        $id = null;
+        if (strpos($fileName, '_') !== false) {
+            list($fileName, $id) = explode('_', $fileName);
+        }
+
+        $entityFile = substr($fileName, 0, strpos($fileName, 'Import'));
+
+        $this->deserialize($entityFile, $fileName, $format, (int)$id);
+    }
+
+    private function deserialize(string $entityName, string $fileName, string $format, int $id = null): void
+    {
+        $data = file_get_contents(
+            sprintf('%s/web/import/%s/%s_%d.%s', $this->projectDir, $entityName, $fileName, $id, $format)
+        );
+        $entityClass = sprintf('AppBundle\Entity\%s', ucfirst($entityName));
+        $entity = $this->entityManager->getRepository($entityClass)->find($id);
+
+        $this->setDeserializer()->deserialize(
+            $data,
+            $entityClass,
+            $format,
+            ['object_to_populate' => $entity]
+        );
 
         $this->entityManager->flush();
+
+        $this->session->getFlashBag()->add(
+            'success',
+            sprintf('Import encji %s do bazy zakończony powodzeniem', $entityName)
+        );
     }
 
     private function setDeserializer(): Serializer
     {
         $encoders = [new XmlEncoder(), new JsonEncoder(), new CsvEncoder(), new YamlEncoder()];
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
 
         return new Serializer(
             [
 //                new EntityNormalizer($this->entityManager),
                 $normalizer,
+                new GetSetMethodNormalizer(),
                 new ArrayDenormalizer(),
                 new PropertyNormalizer(),
-                new GetSetMethodNormalizer(),
-                new JsonSerializableNormalizer()
+                new JsonSerializableNormalizer(),
 //                new DateTimeNormalizer(),
 //                new DataUriNormalizer(),
 //                new DateIntervalNormalizer(),
