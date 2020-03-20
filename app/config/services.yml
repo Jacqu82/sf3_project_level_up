@@ -52,13 +52,10 @@ services:
 
     AppBundle\Service\Import\EntityNormalizer:
         public: false
-        autowire: true
         autoconfigure: true
         tags:
             - { name: serializer.normalizer }
 
     AppBundle\Listener\LogLoginUserListener:
-        arguments:
-            - '@logger'
         tags:
-            - { name: kernel.event_listener, event: kernel.response }
+            - { name: kernel.event_listener, event: security.interactive_login }
