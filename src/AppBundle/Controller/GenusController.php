@@ -6,15 +6,26 @@ use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
 use AppBundle\Entity\GenusScientist;
 use AppBundle\Entity\User;
+use AppBundle\Event\GenusCustomEvent;
 use AppBundle\Service\MarkdownTransformer;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class GenusController extends Controller
 {
+    private $moduloFileName;
+
+    public function __construct(int $moduloFileName)
+    {
+        $this->moduloFileName = $moduloFileName;
+    }
+
     /**
      * @Route("/genus/new")
      */
@@ -29,13 +40,13 @@ class GenusController extends Controller
         $genus->setSubFamily($subFamily);
         $genus->setFunFact('Corporis impedit porro ab.');
         $genus->setSpeciesCount(rand(100, 99999));
-        $genus->setFirstDiscoveredAt(new \DateTime('50 years'));
+        $genus->setFirstDiscoveredAt(new DateTime('50 years'));
 
         $note = new GenusNote();
         $note->setUsername('AquaWeaver');
         $note->setUserAvatarFilename('ryan.jpeg');
         $note->setNote('I counted 8 legs... as they wrapped around me');
-        $note->setCreatedAt(new \DateTime('-1 month'));
+        $note->setCreatedAt(new DateTime('-1 month'));
         $note->setGenus($genus);
 
         $user = $em->getRepository(User::class)->findOneBy(['email' => 'aquanaut1@example.org']);
@@ -50,11 +61,13 @@ class GenusController extends Controller
         $em->persist($note);
         $em->flush();
 
-        return new Response(sprintf(
-            '<html><body>Genus created! <a href="%s">%s</a></body></html>',
-            $this->generateUrl('genus_show', ['slug' => $genus->getSlug()]),
-            $genus->getName()
-        ));
+        return new Response(
+            sprintf(
+                '<html><body>Genus created! <a href="%s">%s</a></body></html>',
+                $this->generateUrl('genus_show', ['slug' => $genus->getSlug()]),
+                $genus->getName()
+            )
+        );
     }
 
     /**
@@ -65,17 +78,22 @@ class GenusController extends Controller
         $em = $this->getDoctrine()->getManager();
         $genuses = $em->getRepository(Genus::class)->findAllPublishedOrderedByRecentlyActive();
 
-        return $this->render('genus/list.html.twig', [
-            'genuses' => $genuses
-        ]);
+        return $this->render(
+            'genus/list.html.twig',
+            [
+                'genuses' => $genuses
+            ]
+        );
     }
-
 
     /**
      * @Route("/genus/{slug}", name="genus_show")
      */
-    public function showAction(Genus $genus, MarkdownTransformer $markdownTransformer)
-    {
+    public function showAction(
+        Genus $genus,
+        MarkdownTransformer $markdownTransformer,
+        EntityManagerInterface $entityManager
+    ): Response {
         $funFact = $markdownTransformer->parse($genus->getFunFact());
 
         $this->get('logger')
@@ -86,13 +104,23 @@ class GenusController extends Controller
 //                return $note->getCreatedAt() > new \DateTime('-3 months');
 //            });
 
+        $dispatcher = new EventDispatcher();
+        $event = new GenusCustomEvent($genus);
+        $dispatcher->dispatch(GenusCustomEvent::NAME, $event)->setRyanFilenameByModulo(
+            $entityManager,
+            $this->moduloFileName
+        );
+
         $recentNotes = $this->getDoctrine()->getRepository(GenusNote::class)->findAllRecentNotesForGenus($genus);
 
-        return $this->render('genus/show.html.twig', [
-            'genus' => $genus,
-            'funFact' => $funFact,
-            'recentNotesCount' => count($recentNotes)
-        ]);
+        return $this->render(
+            'genus/show.html.twig',
+            [
+                'genus' => $genus,
+                'funFact' => $funFact,
+                'recentNotesCount' => count($recentNotes)
+            ]
+        );
     }
 
     /**

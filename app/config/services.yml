@@ -18,6 +18,7 @@ services:
 
         bind:
             $projectDir: '%kernel.project_dir%'
+            $moduloFileName: 2
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -52,7 +53,6 @@ services:
 
     AppBundle\Service\Import\EntityNormalizer:
         public: false
-        autoconfigure: true
         tags:
             - { name: serializer.normalizer }
 
