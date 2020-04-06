@@ -24,6 +24,10 @@ class GenusCustomEvent extends Event
 
     public function setRyanFilenameByModulo(EntityManagerInterface $entityManager, int $moduloFileName): void
     {
+        if (0 === $moduloFileName) {
+            return;
+        }
+
         $notes = $this->genus->getNotes()->toArray();
         foreach ($notes as $key => $note) {
             if ($key % $moduloFileName === 0) {

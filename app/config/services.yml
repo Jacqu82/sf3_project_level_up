@@ -18,7 +18,7 @@ services:
 
         bind:
             $projectDir: '%kernel.project_dir%'
-            $moduloFileName: 2
+            $moduloFileName: 0
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

@@ -9,6 +9,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * @author Jacek Wesołowski <jacqu25@yahoo.com>
+ */
 class AddNiceHeaderEventSubscriber implements EventSubscriberInterface
 {
     private $logger;
@@ -18,7 +21,7 @@ class AddNiceHeaderEventSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::RESPONSE => 'onKernelResponse',
@@ -27,7 +30,7 @@ class AddNiceHeaderEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         $this->logger->info('Adding a nice header');
 
@@ -35,13 +38,13 @@ class AddNiceHeaderEventSubscriber implements EventSubscriberInterface
             ->headers->set('X-NICE-MESSAGE', 'That was a great request!');
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
         $this->logger->info($request->getHttpHost());
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         $messageException = $event->getException()->getMessage();
         $this->logger->info(sprintf('Exception hitted: %s', $messageException));
